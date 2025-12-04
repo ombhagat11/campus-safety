@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+/* Leaflet CSS */
+@import "leaflet/dist/leaflet.css";
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
+@theme {
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-primary-950: #082f49;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-slide-in-right: slideInRight 0.4s ease-out;
+  --animate-slide-in-bottom: slideInBottom 0.4s ease-out;
+  --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInBottom {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@layer utilities {
+    .glass {
+        @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-lg;
+    }
+    
+    .glass-dark {
+        @apply bg-slate-900/70 backdrop-blur-md border border-slate-700/30 shadow-lg;
+    }
+
+    .card-hover {
+        @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    }
+
+    .btn-press {
+        @apply active:scale-95 transition-transform duration-100;
+    }
+
+    .text-gradient {
+        @apply bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent;
+    }
+    
+    .bg-gradient-primary {
+        @apply bg-gradient-to-br from-primary-500 to-indigo-600;
+    }
+
+    /* Scrollbar */
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+/* Base Styles */
+body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+}
+
+.dark body {
+    @apply bg-slate-950 text-slate-100;
+}
+
+/* Leaflet Customization */
+.leaflet-popup-content-wrapper {
+    @apply rounded-xl shadow-xl border-none p-0 overflow-hidden;
+}
+.leaflet-popup-content {
+    @apply m-0;
+}
+.leaflet-container {
+    @apply font-sans;
+}
+
+/* Marker Pulse Animation */
+@keyframes marker-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); }
+}
+.marker-pulse {
+    animation: marker-pulse 2s infinite;
+}

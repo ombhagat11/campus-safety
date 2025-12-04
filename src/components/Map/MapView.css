@@ -1,0 +1,16 @@
+/* Leaflet Map Container Fixes */
+.leaflet-container {
+    height: 100% !important;
+    width: 100% !important;
+    z-index: 1;
+}
+
+/* Custom popup styling */
+.custom-popup .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    padding: 0;
+}
+
+.custom-popup .leaflet-popup-tip {
+    display: none;
+}
