@@ -2,6 +2,19 @@ import rateLimit from "express-rate-limit";
 import env from "../config/env.js";
 
 /**
+ * Rate limiter store configuration
+ * In production with Redis, you should use rate-limit-redis
+ * For now, using memory store with warning
+ */
+const getLimiterStore = () => {
+    if (env.nodeEnv === "production" && !process.env.VERCEL) {
+        console.warn("⚠️  Using memory store for rate limiting. Consider using Redis in production.");
+    }
+    // Default memory store - works for Vercel serverless
+    return undefined;
+};
+
+/**
  * General API rate limiter
  */
 export const apiLimiter = rateLimit({
@@ -10,6 +23,7 @@ export const apiLimiter = rateLimit({
     message: "Too many requests from this IP, please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
+    store: getLimiterStore(),
 });
 
 /**
@@ -22,6 +36,7 @@ export const authLimiter = rateLimit({
     standardHeaders: true,
     legacyHeaders: false,
     skipSuccessfulRequests: true, // Don't count successful requests
+    store: getLimiterStore(),
 });
 
 /**
@@ -29,10 +44,11 @@ export const authLimiter = rateLimit({
  */
 export const reportLimiter = rateLimit({
     windowMs: 60 * 60 * 1000, // 1 hour
-    max: 1000, // Increased for development testing (was 5)
+    max: env.nodeEnv === "production" ? 10 : 1000, // Stricter in production
     message: "You have reached the maximum number of reports per hour. Please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
+    store: getLimiterStore(),
 });
 
 /**
@@ -44,6 +60,7 @@ export const passwordResetLimiter = rateLimit({
     message: "Too many password reset attempts, please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
+    store: getLimiterStore(),
 });
 
 /**
@@ -55,6 +72,7 @@ export const verificationLimiter = rateLimit({
     message: "Too many verification requests, please try again later.",
     standardHeaders: true,
     legacyHeaders: false,
+    store: getLimiterStore(),
 });
 
 export default {
