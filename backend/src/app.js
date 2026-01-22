@@ -30,8 +30,14 @@ import connectDB from "./db/connection.js";
 const app = express();
 const httpServer = createServer(app);
 
-// Initialize Socket.io
-const io = initializeSocket(httpServer);
+// Initialize Socket.io only if not in serverless environment
+let io = null;
+if (!process.env.VERCEL) {
+  io = initializeSocket(httpServer);
+  console.log("✅ Socket.io initialized (non-serverless mode)");
+} else {
+  console.log("⚠️  Socket.io disabled in serverless environment");
+}
 
 // Security middleware
 app.use(helmet());
@@ -75,6 +81,7 @@ app.get("/health", (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: env.nodeEnv,
+    socketio: !process.env.VERCEL ? "enabled" : "disabled",
   });
 });
 
@@ -84,6 +91,7 @@ app.get("/", (req, res) => {
     message: "Campus Safety API",
     version: "1.0.0",
     docs: "/api-docs",
+    deployment: process.env.VERCEL ? "vercel" : "standard",
   });
 });
 
