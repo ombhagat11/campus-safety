@@ -87,15 +87,24 @@ if (env.nodeEnv === "production") {
     const required = [
         "CLERK_SECRET_KEY",
         "CLERK_PUBLISHABLE_KEY",
-        "CLERK_WEBHOOK_SECRET",
         "MONGODB_URI",
-        "AWS_ACCESS_KEY_ID",
-        "AWS_SECRET_ACCESS_KEY",
     ];
 
     const missing = required.filter((key) => !process.env[key]);
     if (missing.length > 0) {
         throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+    }
+
+    // Warn about optional but recommended variables
+    const recommended = [
+        "CLERK_WEBHOOK_SECRET",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+    ];
+
+    const missingRecommended = recommended.filter((key) => !process.env[key]);
+    if (missingRecommended.length > 0) {
+        console.warn(`⚠️  Missing recommended environment variables: ${missingRecommended.join(", ")}`);
     }
 }
 
