@@ -11,7 +11,6 @@ dotenv.config();
 import authRoutes from "../src/routes/auth.routes.js";
 import reportsRoutes from "../src/routes/reports.routes.js";
 import usersRoutes from "../src/routes/users.routes.js";
-import uploadsRoutes from "../src/routes/uploads.routes.js";
 import moderationRoutes from "../src/routes/moderation.routes.js";
 import adminRoutes from "../src/routes/admin.routes.js";
 import publicRoutes from "../src/routes/public.routes.js";
@@ -44,14 +43,19 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 // Connect to database (with caching for serverless)
-let cachedDb = null;
 const connectToDatabase = async () => {
-    if (cachedDb) {
-        return cachedDb;
+    try {
+        await connectDB();
+    } catch (err) {
+        console.error("Database connection error in serverless:", err);
     }
-    cachedDb = await connectDB();
-    return cachedDb;
 };
+
+// Global DB connection middleware
+app.use(async (req, res, next) => {
+    await connectToDatabase();
+    next();
+});
 
 // Health check
 app.get("/", (req, res) => {
@@ -76,7 +80,6 @@ app.get("/health", (req, res) => {
 app.use("/api/auth", authLimiter, authRoutes);
 app.use("/api/reports", reportLimiter, reportsRoutes);
 app.use("/api/users", usersRoutes);
-app.use("/api/uploads", uploadsRoutes);
 app.use("/api/moderation", moderationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/public", publicRoutes);
@@ -85,7 +88,6 @@ app.use("/api/public", publicRoutes);
 app.use("/auth", authLimiter, authRoutes);
 app.use("/reports", reportLimiter, reportsRoutes);
 app.use("/users", usersRoutes);
-app.use("/uploads", uploadsRoutes);
 app.use("/moderation", moderationRoutes);
 app.use("/admin", adminRoutes);
 app.use("/public", publicRoutes);
@@ -96,10 +98,4 @@ app.use(notFoundHandler);
 // Error handler (must be last)
 app.use(errorHandler);
 
-// Initialize database connection before handling requests
-const handler = async (req, res) => {
-    await connectToDatabase();
-    return app(req, res);
-};
-
-export default handler;
+export default app;

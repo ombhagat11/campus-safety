@@ -4,7 +4,6 @@ import Report from "../db/schemas/Report.js";
 import AuditLog from "../db/schemas/AuditLog.js";
 import { hashPassword } from "../utils/password.js";
 import env from "../config/env.js";
-import { sendModeratorInvite } from "../services/emailService.js";
 
 /**
  * Get analytics/dashboard data

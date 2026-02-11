@@ -1,15 +1,7 @@
 import rateLimit from "express-rate-limit";
 import env from "../config/env.js";
 
-/**
- * Rate limiter store configuration
- * In production with Redis, you should use rate-limit-redis
- * For now, using memory store with warning
- */
 const getLimiterStore = () => {
-    if (env.nodeEnv === "production" && !process.env.VERCEL) {
-        console.warn("⚠️  Using memory store for rate limiting. Consider using Redis in production.");
-    }
     // Default memory store - works for Vercel serverless
     return undefined;
 };
