@@ -11,53 +11,11 @@ const env = {
     mongoUri: process.env.MONGODB_URI || "mongodb://localhost:27017/campus-safety",
     mongoTestUri: process.env.MONGODB_TEST_URI || "mongodb://localhost:27017/campus-safety-test",
 
-    // Redis
-    redis: {
-        host: process.env.REDIS_HOST || "localhost",
-        port: parseInt(process.env.REDIS_PORT || "6379", 10),
-        password: process.env.REDIS_PASSWORD || undefined,
-    },
-
-    // JWT (Legacy - for backward compatibility)
+    // JWT
     jwt: {
         secret: process.env.JWT_SECRET || "dev-secret-key",
         accessExpiry: process.env.JWT_ACCESS_EXPIRY || "15m",
         refreshExpiry: process.env.JWT_REFRESH_EXPIRY || "7d",
-    },
-
-    // Clerk Authentication
-    clerk: {
-        secretKey: process.env.CLERK_SECRET_KEY,
-        publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
-        webhookSecret: process.env.CLERK_WEBHOOK_SECRET,
-    },
-
-    // AWS S3
-    aws: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        bucketName: process.env.AWS_BUCKET_NAME || "campus-safety-media",
-        region: process.env.AWS_REGION || "us-east-1",
-    },
-
-    // Firebase
-    fcm: {
-        serviceAccountPath: process.env.FCM_SERVICE_ACCOUNT_PATH || "./config/fcm-service-account.json",
-    },
-
-    // Mapbox
-    mapbox: {
-        accessToken: process.env.MAPBOX_ACCESS_TOKEN,
-    },
-
-    // Email
-    email: {
-        service: process.env.EMAIL_SERVICE || "smtp",
-        host: process.env.EMAIL_HOST,
-        port: parseInt(process.env.EMAIL_PORT || "587", 10),
-        user: process.env.EMAIL_USER,
-        password: process.env.EMAIL_PASSWORD,
-        from: process.env.EMAIL_FROM || "noreply@campussafety.com",
     },
 
     // Rate Limiting
@@ -85,26 +43,13 @@ const env = {
 // Validation in production
 if (env.nodeEnv === "production") {
     const required = [
-        "CLERK_SECRET_KEY",
-        "CLERK_PUBLISHABLE_KEY",
         "MONGODB_URI",
+        "JWT_SECRET"
     ];
 
     const missing = required.filter((key) => !process.env[key]);
     if (missing.length > 0) {
         throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
-    }
-
-    // Warn about optional but recommended variables
-    const recommended = [
-        "CLERK_WEBHOOK_SECRET",
-        "AWS_ACCESS_KEY_ID",
-        "AWS_SECRET_ACCESS_KEY",
-    ];
-
-    const missingRecommended = recommended.filter((key) => !process.env[key]);
-    if (missingRecommended.length > 0) {
-        console.warn(`⚠️  Missing recommended environment variables: ${missingRecommended.join(", ")}`);
     }
 }
 

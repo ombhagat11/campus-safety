@@ -11,7 +11,6 @@ import env from "./config/env.js";
 import authRoutes from "./routes/auth.routes.js";
 import reportsRoutes from "./routes/reports.routes.js";
 import usersRoutes from "./routes/users.routes.js";
-import uploadsRoutes from "./routes/uploads.routes.js";
 import moderationRoutes from "./routes/moderation.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import publicRoutes from "./routes/public.routes.js";
@@ -22,7 +21,6 @@ import { apiLimiter, authLimiter, reportLimiter } from "./middlewares/rateLimite
 
 // Import services
 import { initializeSocket } from "./services/socketService.js";
-import { verifyEmailConfig } from "./services/emailService.js";
 
 // Import database
 import connectDB from "./db/connection.js";
@@ -71,9 +69,6 @@ if (env.nodeEnv === "development") {
 // Connect to database
 connectDB();
 
-// Verify email service (non-blocking)
-verifyEmailConfig().catch((err) => console.warn("Email service not configured:", err.message));
-
 // Health check
 app.get("/health", (req, res) => {
   res.json({
@@ -99,7 +94,6 @@ app.get("/", (req, res) => {
 app.use("/auth", authLimiter, authRoutes);
 app.use("/reports", reportLimiter, reportsRoutes);
 app.use("/users", usersRoutes);
-app.use("/uploads", uploadsRoutes);
 app.use("/moderation", moderationRoutes);
 app.use("/admin", adminRoutes);
 app.use("/public", publicRoutes);
